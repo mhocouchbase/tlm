@@ -2,6 +2,10 @@
 
 include(ExternalProject)
 
+if (_platform STREQUAL "macarm")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif (_platform STREQUAL "macarm")
+
 SET (_install_dir "${CMAKE_BINARY_DIR}/install")
 
 # Expand prometheus-cpp deps to a separate install directory so we don't end up
@@ -11,7 +15,7 @@ set(_deps_install "${CMAKE_CURRENT_BINARY_DIR}/dep-install")
 set(CMAKE_INSTALL_PREFIX "${_deps_install}")
 
 # Install prometheus-cpp prereqs that we already provide
-DECLARE_DEP (zlib V2 VERSION 1.2.11 BUILD 4 PLATFORMS amzn2 centos7 debian8 debian9 macosx suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2017)
+DECLARE_DEP (zlib V2 VERSION 1.2.11 BUILD 4 PLATFORMS amzn2 centos7 debian8 debian9 macosx macarm suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2017)
 DECLARE_DEP (zlib V2 VERSION 1.2.11 BUILD 6 PLATFORMS rhel8 ubuntu20.04)
 
 # Restore the INSTALL_PREFIX

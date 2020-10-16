@@ -2,6 +2,10 @@
 
 include(ExternalProject)
 
+if (_platform STREQUAL "macarm")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif (_platform STREQUAL "macarm")
+
 ### Download, configure and build lz4  ####################################
 ExternalProject_Add(lz4
   GIT_REPOSITORY https://github.com/couchbasedeps/lz4

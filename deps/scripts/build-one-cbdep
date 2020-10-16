@@ -4,7 +4,12 @@ cd deps/packages
 rm -rf build
 mkdir build
 cd build
-cmake .. -DPACKAGE=${PACKAGE}
+if [ "x${DISTRO}" = "xmacarm" ]; then
+    cmake .. -DPACKAGE=${PACKAGE} -DCMAKE_OSX_ARCHITECTURES=arm64
+else
+    cmake .. -DPACKAGE=${PACKAGE}
+fi
+
 cmake --build . --target ${PACKAGE}
 
 if [ x$1 = xinstall ]

@@ -1,0 +1,34 @@
+diff -ruN ./libs/atomic/include/boost/atomic/detail/ops_gcc_x86_dcas.hpp ../boost.new/libs/atomic/include/boost/atomic/detail/ops_gcc_x86_dcas.hpp
+--- ./libs/atomic/include/boost/atomic/detail/ops_gcc_x86_dcas.hpp      2020-10-15 17:01:15.000000000 -0700
++++ ../boost.new/libs/atomic/include/boost/atomic/detail/ops_gcc_x86_dcas.hpp   2020-10-15 17:07:10.000000000 -0700
+@@ -405,7 +405,7 @@
+
+         // Clang cannot allocate rax:rdx register pairs but it has sync intrinsics
+         storage_type value = storage_type();
+-        return __sync_val_compare_and_swap(&storage, value, value);
++        return __sync_val_compare_and_swap(const_cast<storage_type volatile*>(&storage), value, value);
+
+ #elif defined(BOOST_ATOMIC_DETAIL_X86_NO_ASM_AX_DX_PAIRS)
+
+diff -ruN ./tools/build/src/tools/darwin.jam ../boost.new/tools/build/src/tools/darwin.jam
+--- ./tools/build/src/tools/darwin.jam  2020-10-15 17:09:13.000000000 -0700
++++ ../boost.new/tools/build/src/tools/darwin.jam       2020-10-15 17:01:59.000000000 -0700
+@@ -136,14 +136,15 @@
+
+     # - Set the toolset generic common options.
+     common.handle-options darwin : $(condition) : $(command) : $(options) ;
+-
++
++    real-version = [ regex.split $(real-version) \\. ] ;
+     # - GCC 4.0 and higher in Darwin does not have -fcoalesce-templates.
+-    if $(real-version) < "4.0.0"
++    if [ version.version-less $(real-version) : 4 0 ]
+     {
+         flags darwin.compile.c++ OPTIONS $(condition) : -fcoalesce-templates ;
+     }
+     # - GCC 4.2 and higher in Darwin does not have -Wno-long-double.
+-    if $(real-version) < "4.2.0"
++    if [ version.version-less $(real-version) : 4 2 ]
+     {
+         flags darwin.compile OPTIONS $(condition) : -Wno-long-double ;
+     }

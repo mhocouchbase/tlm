@@ -58,20 +58,27 @@ EOF
 gclient sync
 
 # Apply change to enable RPATH (runpath) for libraries/binaries on Linux
-if [[ $PLATFORM != "macosx" ]]; then
+if [[ $PLATFORM != "macosx" && $PLATFORM != "macarm" ]]; then
     pushd v8/build
     git apply $SCRIPTPATH/v8_linux_runpath.patch
     popd
 fi
 
+#set target CPU
+if [[ $PLATFORM != "macarm" ]]; then
+  TARGET_CPU="x64"
+else
+  TARGET_CPU="arm64"
+fi
+
 # Actual v8 configure and build steps - we build debug and release.
 cd v8
-V8_ARGS='target_cpu="x64" is_component_build=true v8_enable_backtrace=true v8_use_external_startup_data=false'
+V8_ARGS='target_cpu="$TARGET_CPU" is_component_build=true v8_enable_backtrace=true v8_use_external_startup_data=false'
 gn gen out.gn/x64.release --args="$V8_ARGS is_debug=false"
-ninja -C out.gn/x64.release
+ninja -C out.gn/$TARGET_CPU.release
 V8_ARGS="$V8_ARGS v8_enable_slow_dchecks=true v8_optimized_debug=false"
 gn gen out.gn/x64.debug --args="$V8_ARGS is_debug=true"
-ninja -C out.gn/x64.debug
+ninja -C out.gn/$TARGET_CPU.debug
 
 # Copy right stuff to output directory.
 mkdir -p \
@@ -80,7 +87,7 @@ mkdir -p \
     $INSTALL_DIR/include/libplatform \
     $INSTALL_DIR/include/unicode
 (
-    cd out.gn/x64.release
+    cd out.gn/$TARGET_CPU.release
     cp -avi libv8*.* $INSTALL_DIR/lib/Release
     cp -avi libicu*.* $INSTALL_DIR/lib/Release
     cp -avi icu*.* $INSTALL_DIR/lib/Release
@@ -89,11 +96,11 @@ mkdir -p \
     fi
 )
 (
-    cd out.gn/x64.debug
+    cd out.gn/$TARGET_CPU.debug
     cp -avi libv8*.* $INSTALL_DIR/lib/Debug
     cp -avi libicu*.* $INSTALL_DIR/lib/Debug
     cp -avi icu*.* $INSTALL_DIR/lib/Debug
-    if [[ $PLATFORM != "macosx" ]]; then
+    if [[ $PLATFORM != "macosx" && $PLATFORM != "macarm" ]]; then
         cp -avi libc++*.* $INSTALL_DIR/lib/Debug
     fi
 )
@@ -117,4 +124,3 @@ mkdir -p \
 (
     cd third_party/icu/source/extra/uconv/unicode
     cp -avi *.h $INSTALL_DIR/include/unicode
-)

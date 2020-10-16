@@ -1,6 +1,11 @@
 # Downloads the declared version of Folly builds it.
 include(ExternalProject)
 
+
+if (_platform STREQUAL "macarm")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif (_platform STREQUAL "macarm")
+
 # Expand folly's deps to a separate install directory so we don't end up
 # packaging them up in the folly cbdep itself.
 set(_orig_install_prefix "${CMAKE_INSTALL_PREFIX}")
@@ -11,20 +16,20 @@ set(CMAKE_INSTALL_PREFIX "${_folly_deps_install}")
 # (previously using GCC 8.2.1), the following temporary conditionals
 # are needed for said platform, and can be removed once things are
 # resynced with a later build.
-DECLARE_DEP (boost VERSION 1.67.0-cb8 PLATFORMS amzn2 centos7 centos8 debian8 debian9 debian10 macosx rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2017)
-DECLARE_DEP (double-conversion VERSION 3.0.0-cb2 PLATFORMS amzn2 centos6 centos7 debian8 debian9 macosx suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2015 windows_msvc2017)
+DECLARE_DEP (boost VERSION 1.67.0-cb8 PLATFORMS amzn2 centos7 centos8 debian8 debian9 debian10 macosx macarm rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2017)
+DECLARE_DEP (double-conversion VERSION 3.0.0-cb2 PLATFORMS amzn2 centos6 centos7 debian8 debian9 macosx macarm suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2015 windows_msvc2017)
 DECLARE_DEP (double-conversion VERSION 3.0.0-cb4 PLATFORMS centos8 debian10 rhel8 ubuntu20.04)
-DECLARE_DEP (fmt VERSION 7.0.3-cb2 PLATFORMS amzn2 centos7 centos8 debian8 debian9 debian10 macosx rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2015 windows_msvc2017)
-DECLARE_DEP (glog VERSION v0.4.0-cb1 PLATFORMS amzn2 centos6 centos7 centos8 debian8 debian9 debian10 macosx rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2015 windows_msvc2017)
-DECLARE_DEP (jemalloc VERSION 5.2.1-cb4 PLATFORMS amzn2 centos7 centos8 debian7 debian8 debian9 debian10 macosx rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2017)
-DECLARE_DEP (libevent VERSION 2.1.8-cb8 PLATFORMS amzn2 centos7 debian8 debian9 macosx suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2017)
+DECLARE_DEP (fmt VERSION 7.0.3-cb2 PLATFORMS amzn2 centos7 centos8 debian8 debian9 debian10 macosx macarm rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2015 windows_msvc2017)
+DECLARE_DEP (glog VERSION v0.4.0-cb1 PLATFORMS amzn2 centos6 centos7 centos8 debian8 debian9 debian10 macosx macarm rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2015 windows_msvc2017)
+DECLARE_DEP (jemalloc VERSION 5.2.1-cb4 PLATFORMS amzn2 centos7 centos8 debian7 debian8 debian9 debian10 macosx macarm rhel8 suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2017)
+DECLARE_DEP (libevent VERSION 2.1.8-cb8 PLATFORMS amzn2 centos7 debian8 debian9 macosx macarm suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2017)
 DECLARE_DEP (libevent VERSION 2.1.8-cb10 PLATFORMS centos8 debian10 rhel8)
 DECLARE_DEP (libevent VERSION 2.1.11-cb6 PLATFORMS ubuntu20.04)
-DECLARE_DEP (openssl V2 VERSION 1.1.1h BUILD 1 PLATFORMS amzn2 centos7 centos8 debian8 debian9 debian10 macosx suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2017)
+DECLARE_DEP (openssl V2 VERSION 1.1.1h BUILD 1 PLATFORMS amzn2 centos7 centos8 debian8 debian9 debian10 macosx macarm suse12 suse15 ubuntu16.04 ubuntu18.04 ubuntu20.04 windows_msvc2017)
 DECLARE_DEP (snappy VERSION 1.1.1 PLATFORMS windows_msvc2015 windows_msvc2017)
-DECLARE_DEP (snappy VERSION 1.1.1-cb2 PLATFORMS amzn2 centos6 centos7 debian8 debian9 macosx suse11 suse12 suse15 ubuntu14.04 ubuntu16.04 ubuntu18.04)
+DECLARE_DEP (snappy VERSION 1.1.1-cb2 PLATFORMS amzn2 centos6 centos7 debian8 debian9 macosx macarm suse11 suse12 suse15 ubuntu14.04 ubuntu16.04 ubuntu18.04)
 DECLARE_DEP (snappy VERSION 1.1.1-cb5 PLATFORMS centos8 debian10 rhel8 ubuntu20.04)
-DECLARE_DEP (zlib V2 VERSION 1.2.11 BUILD 4 PLATFORMS amzn2 centos7 debian8 debian9 macosx suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2017)
+DECLARE_DEP (zlib V2 VERSION 1.2.11 BUILD 4 PLATFORMS amzn2 centos7 debian8 debian9 macosx macarm suse12 suse15 ubuntu16.04 ubuntu18.04 windows_msvc2017)
 DECLARE_DEP (zlib V2 VERSION 1.2.11 BUILD 6 PLATFORMS centos8 debian10 rhel8 ubuntu20.04)
 
 # Restore the INSTALL_PREFIX

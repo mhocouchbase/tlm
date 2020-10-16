@@ -2,6 +2,10 @@
 
 include(ExternalProject)
 
+if (_platform STREQUAL "macarm")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif (_platform STREQUAL "macarm")
+
 ### Download, configure and build snappy ####################################
 ExternalProject_Add(snappy
   GIT_REPOSITORY ${_git_repo}

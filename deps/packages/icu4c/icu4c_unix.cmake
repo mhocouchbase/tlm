@@ -2,6 +2,10 @@
 
 include(ExternalProject)
 
+if (_platform STREQUAL "macarm")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif (_platform STREQUAL "macarm")
+
 # For APPLE we anyway set rpaths using install_name_tool below
 if (APPLE)
     SET(_rpath_options "")

@@ -1,10 +1,17 @@
 include(ExternalProject)
 
+if (_platform STREQUAL "macarm")
+  set(CMAKE_EXTRA_ARGS -D CMAKE_OSX_ARCHITECTURES=arm64)
+else (_platform STREQUAL "macarm")
+  set(CMAKE_EXTRA_ARGS "")
+endif (_platform STREQUAL "macarm")
+
 ExternalProject_Add(glog
   GIT_REPOSITORY ${_git_repo}
   GIT_TAG ${_git_rev}
   BUILD_IN_SOURCE 1
-  CMAKE_ARGS -D CMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
+  CMAKE_ARGS ${CMAKE_EXTRA_ARGS}
+             -D CMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
              -D CMAKE_BUILD_TYPE=RelWithDebInfo
              -D BUILD_SHARED_LIBS=OFF
 

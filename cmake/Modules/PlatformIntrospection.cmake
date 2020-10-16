@@ -17,8 +17,15 @@ MACRO (_DETERMINE_ARCH var)
   ELSE (DEFINED CB_DOWNLOAD_DEPS_ARCH)
     # We tweak MacOS, which for some reason claims to be i386
     IF (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-      # QQQ MacOS 10.7 could be 32-bit; we should catch and abort
-      SET (_arch x86_64)
+      EXEC_PROGRAM(uname ARGS -v  OUTPUT_VARIABLE DARWIN_VERSION)
+      STRING(REGEX MATCH "[0-9]+" DARWIN_VERSION ${DARWIN_VERSION})
+      MESSAGE(STATUS "DARWIN_VERSION=${DARWIN_VERSION}")
+      IF (DARWIN_VERSION LESS 20)
+        # QQQ MacOS 10.7 could be 32-bit; we should catch and abort
+        SET (_arch x86_64)
+      ELSE ()
+        SET (_arch arm64)
+      ENDIF ()
     ELSEIF (CMAKE_SYSTEM_NAME STREQUAL "SunOS")
       EXECUTE_PROCESS (COMMAND isainfo -k
         COMMAND tr -d '\n'
@@ -97,7 +104,14 @@ MACRO (_DETERMINE_PLATFORM var)
         MESSAGE(FATAL_ERROR "Unsupported MSVC version: ${MSVC_VERSION}")
       ENDIF ()
     ELSEIF (_plat STREQUAL "Darwin")
-      SET (_plat "macosx")
+      EXEC_PROGRAM(uname ARGS -v  OUTPUT_VARIABLE DARWIN_VERSION)
+      STRING(REGEX MATCH "[0-9]+" DARWIN_VERSION ${DARWIN_VERSION})
+      MESSAGE(STATUS "DARWIN_VERSION=${DARWIN_VERSION}")
+      IF (DARWIN_VERSION LESS 20)
+        SET (_plat "macosx")
+      ELSE ()
+        SET (_plat "macarm")
+      ENDIF ()
     ELSEIF (_plat STREQUAL "Linux")
       _DETERMINE_LINUX_DISTRO (_plat)
     ELSEIF (_plat STREQUAL "SunOS")
@@ -206,6 +220,7 @@ MACRO (CB_GET_SUPPORTED_PLATFORM _supported_platform)
        "centos6" "centos7" "centos8"
        "debian8" "debian9" "debian10"
        "macosx"
+       "macarm"
        "rhel8"
        "suse12" "suse15"
        "ubuntu16.04" "ubuntu18.04" "ubuntu20.04"

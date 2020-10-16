@@ -2,6 +2,11 @@
 
 include(ExternalProject)
 
+if (_platform STREQUAL "macarm")
+  set(CMAKE_OSX_ARCHITECTURES "arm64")
+endif (_platform STREQUAL "macarm")
+
+
 ### Download, configure and build pcre ##################################
 IF (WIN32)
   SET (_build_script ${CMAKE_CURRENT_SOURCE_DIR}/${_dep_package}_windows.bat)

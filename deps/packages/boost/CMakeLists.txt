@@ -3,20 +3,26 @@
 include(ExternalProject)
 
 ### Download, configure and build boost ####################################
+set(CMAKE_VERBOSE_MAKEFILE on)
 
 if (WIN32)
-   set(boost_bootstrap bootstrap.bat)
-   set(boost_extra_flags "")
-   set(boost_variant "debug,release")
+  set(boost_bootstrap bootstrap.bat)
+  set(boost_extra_flags "")
+  set(boost_variant "debug,release")
 else (WIN32)
-   set(boost_bootstrap bootstrap.sh)
-   set(boost_extra_flags cxxflags=-std=c++17 cflags=-fno-omit-frame-pointer cxxflags=-fno-omit-frame-pointer cxxflags=-fPIC)
-   set(boost_variant "release")
+  set(boost_bootstrap bootstrap.sh)
+  if (_platform STREQUAL "macarm")
+    set(boost_extra_flags --user-config=${CMAKE_CURRENT_SOURCE_DIR}/user-config.jam cxxflags=-std=c++17 cflags=-fno-omit-frame-pointer cxxflags=-fno-omit-frame-pointer cxxflags=-fPIC)
+  else (_platform STREQUAL "macarm")
+    set(boost_extra_flags cxxflags=-std=c++17 cflags=-fno-omit-frame-pointer cxxflags=-fno-omit-frame-pointer cxxflags=-fPIC)
+  endif (_platform STREQUAL "macarm")
+  set(boost_variant "release")
 endif (WIN32)
 
 ExternalProject_Add(boost
   GIT_REPOSITORY git://github.com/boostorg/boost
   GIT_TAG ${_git_rev}
+  PATCH_COMMAND patch -p0 --ignore-whitespace < ${CMAKE_CURRENT_SOURCE_DIR}/boost_mac.patch
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND <SOURCE_DIR>/${boost_bootstrap} --prefix=<INSTALL_DIR>
       --with-libraries=context,chrono,date_time,filesystem,program_options,regex,system,thread
