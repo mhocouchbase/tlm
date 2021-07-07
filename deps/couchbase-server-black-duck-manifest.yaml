@@ -27,6 +27,9 @@ components:
     folly: [ v2020.08.24.00 ]
     glog: [ 0.4.0 ]
     grpc: [ 1.28.1 ]
+    gnu ncurses:
+        bd-name: ncurses
+        versions: [ 6.2 ]
     jemalloc: [ 5.2.1 ]
     json:
         bd-name: JSON for Modern C++
@@ -49,7 +52,7 @@ components:
         bd-name: google-snappy
         versions: [ 1.1.1 ]
     v8:
-        bd-name: Google V8 Javascript engine
+        bd-name: Google V8 JavaScript Engine
         versions: [ 8.3.110.13 ]
         cbdeps-versions: [ 8.3 ]
     zlib: [ 1.2.11 ]
